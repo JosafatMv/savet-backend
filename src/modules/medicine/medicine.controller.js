@@ -1,7 +1,7 @@
 const {Response, Router} = require('express');
 const {checkRoles, auth} = require('../../config/jwt');
 const {validateError} = require('../../utils/functions');
-const {findAll, findById, save, updateById, deleteById} = require("./pet.gateway");
+const {save, findById, findAll, updateById, deleteById} = require("./medicine.gateway");
 
 const getAll = async (req, res = Response) => {
     try {
@@ -29,26 +29,35 @@ const getById = async (req, res = Response) => {
 
 const insert = async (req, res = Response) => {
     try {
-        const {name, breed, gender, weight, personal} =
+        const {
+            tradename,
+            scientific_name,
+            brand,
+            batch,
+            date_expiry,
+            price,
+        } =
             req.body;
         const results = await save({
-            name,
-            breed,
-            gender,
-            weight,
-            personal,
+            tradename,
+            scientific_name,
+            brand,
+            batch,
+            date_expiry,
+            price,
         });
 
-        const petRegistered = {
+        const medicineRegistered = {
             id: results.insertId,
-            name,
-            breed,
-            gender,
-            weight,
-            personal,
+            tradename,
+            scientific_name,
+            brand,
+            batch,
+            date_expiry,
+            price,
         };
 
-        res.status(200).json(petRegistered);
+        res.status(200).json(medicineRegistered);
     } catch (err) {
         console.log(err);
         const message = validateError(err);
@@ -60,27 +69,33 @@ const update = async (req, res = Response) => {
     try {
         const {id} = req.params;
         const {
-            name,
-            breed,
-            gender,
-            weight
+            tradename,
+            scientific_name,
+            brand,
+            batch,
+            date_expiry,
+            price,
         } = req.body;
         const results = await updateById(id, {
-            name,
-            breed,
-            gender,
-            weight,
+            tradename,
+            scientific_name,
+            brand,
+            batch,
+            date_expiry,
+            price,
         });
 
-        const petUpdated = {
+        const medicineUpdated = {
             id,
-            name,
-            breed,
-            gender,
-            weight,
+            tradename,
+            scientific_name,
+            brand,
+            batch,
+            date_expiry,
+            price,
         };
 
-        res.status(200).json(petUpdated);
+        res.status(200).json(medicineUpdated);
 
     } catch (err) {
         console.log(err);
@@ -95,7 +110,7 @@ const remove = async (req, res = Response) => {
         if (Number.isNaN(id)) throw Error('Wrong type');
         const results = await deleteById(id);
         res.status(200).json({
-            message: 'Pet deleted'
+            message: 'Medicine deleted'
         });
     } catch (err) {
         console.log(err);
@@ -104,14 +119,14 @@ const remove = async (req, res = Response) => {
     }
 }
 
-const petRouter = Router();
-petRouter.get('/', [], getAll);
-petRouter.get('/:id', [], getById);
-petRouter.post('/', [], insert);
-petRouter.put('/:id', [], update);
-petRouter.delete('/:id', [], remove);
+const medicineRouter = Router();
+medicineRouter.get('/', [], getAll);
+medicineRouter.get('/:id', [], getById);
+medicineRouter.post('/', [], insert);
+medicineRouter.put('/:id', [], update);
+medicineRouter.delete('/:id', [], remove);
 
 module.exports = {
-    petRouter,
+    medicineRouter,
 };
 

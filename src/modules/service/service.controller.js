@@ -1,7 +1,7 @@
 const {Response, Router} = require('express');
 const {checkRoles, auth} = require('../../config/jwt');
 const {validateError} = require('../../utils/functions');
-const {findAll, findById, save, updateById, deleteById} = require("./pet.gateway");
+const {findAll, deleteById, updateById, save, findById} = require("./service.gateway");
 
 const getAll = async (req, res = Response) => {
     try {
@@ -29,26 +29,18 @@ const getById = async (req, res = Response) => {
 
 const insert = async (req, res = Response) => {
     try {
-        const {name, breed, gender, weight, personal} =
+        const {name, description, price} =
             req.body;
         const results = await save({
-            name,
-            breed,
-            gender,
-            weight,
-            personal,
+            name, description, price,
         });
 
-        const petRegistered = {
+        const serviceRegistered = {
             id: results.insertId,
-            name,
-            breed,
-            gender,
-            weight,
-            personal,
+            name, description, price,
         };
 
-        res.status(200).json(petRegistered);
+        res.status(200).json(serviceRegistered);
     } catch (err) {
         console.log(err);
         const message = validateError(err);
@@ -60,27 +52,18 @@ const update = async (req, res = Response) => {
     try {
         const {id} = req.params;
         const {
-            name,
-            breed,
-            gender,
-            weight
+            name, description, price,
         } = req.body;
         const results = await updateById(id, {
-            name,
-            breed,
-            gender,
-            weight,
+            name, description, price
         });
 
-        const petUpdated = {
+        const serviceUpdated = {
             id,
-            name,
-            breed,
-            gender,
-            weight,
+            name, description, price,
         };
 
-        res.status(200).json(petUpdated);
+        res.status(200).json(serviceUpdated);
 
     } catch (err) {
         console.log(err);
@@ -95,7 +78,7 @@ const remove = async (req, res = Response) => {
         if (Number.isNaN(id)) throw Error('Wrong type');
         const results = await deleteById(id);
         res.status(200).json({
-            message: 'Pet deleted'
+            message: 'Service deleted'
         });
     } catch (err) {
         console.log(err);
@@ -104,14 +87,14 @@ const remove = async (req, res = Response) => {
     }
 }
 
-const petRouter = Router();
-petRouter.get('/', [], getAll);
-petRouter.get('/:id', [], getById);
-petRouter.post('/', [], insert);
-petRouter.put('/:id', [], update);
-petRouter.delete('/:id', [], remove);
+const serviceRouter = Router();
+serviceRouter.get('/', [], getAll);
+serviceRouter.get('/:id', [], getById);
+serviceRouter.post('/', [], insert);
+serviceRouter.put('/:id', [], update);
+serviceRouter.delete('/:id', [], remove);
 
 module.exports = {
-    petRouter,
+    serviceRouter,
 };
 
