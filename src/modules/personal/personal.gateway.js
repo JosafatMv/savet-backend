@@ -1,8 +1,6 @@
 const {query} = require('../../utils/mysql');
-const {hashPassword} = require("../../utils/functions");
 
 const findAll = async () => {
-    // const sql = 'SELECT * FROM personal pe JOIN position po on pe.position_id = po.id';
     const sql = 'SELECT * FROM personal';
     return await query(sql, []);
 };
@@ -53,14 +51,6 @@ const deleteById = async (id) => {
     const sql = 'DELETE FROM personal WHERE personal_id = ?';
     return await query(sql, [id]);
 }
-
-// const updatePassword = async (id, password) => {
-//     if (!id || !password) throw Error('Missing fields');
-//     const newPassword = await hashPassword(password);
-//
-//     const sql = 'UPDATE personal SET password = ? WHERE personal_id = ?';
-//     return await query(sql, [newPassword, id]);
-// }
 
 module.exports = {
     findAll,
