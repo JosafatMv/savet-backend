@@ -143,4 +143,36 @@ CREATE TABLE `users` (
   CONSTRAINT `fk_users_personals1` FOREIGN KEY (`personal_id`) REFERENCES `personal` (`personal_id`)
 );
 
-INSERT INTO `users` VALUES (1,'josafatmunoz5@gmail.com','$2a$10$5qqIVsBeD1d0U3yTFomFA.SMp1hIpyVadzLmkSlSZzlQ53Zd8lDIa','admin',1,2);
+#-----Inserts Pets-----
+INSERT INTO `pets` VALUES (1,'Gatote','Cat','Male',5,2);
+INSERT INTO `pets` VALUES (2,'Pepote','Dog','Male',7,3);
+INSERT INTO `pets` VALUES (3,'Capibara','Capybara','Male',15,2);
+INSERT INTO `pets` VALUES (4,'Gatito','Cat','Male',5,3);
+INSERT INTO `pets` VALUES (5,'Rocky','Dog','Male',9,2);
+
+#-----Inserts personal-----
+INSERT INTO `personal` VALUES (2,'Josafat','Muñoz','Valverde','2003-04-19');
+INSERT INTO `personal` VALUES (3,'Cristopher','Soto','Ventura','2003-06-06');
+INSERT INTO `personal` VALUES (4,'Yahir','Degante','Salinas','2003-12-08');
+INSERT INTO `personal` VALUES (5,'Jonathan','Ramirez','Garcia','2003-08-19');
+INSERT INTO `personal` VALUES (6,'Cabron','James','Ortiz','2003-10-22');
+
+#-----Inserts users------- 
+INSERT INTO `users` VALUES ('josafatmunoz5@gmail.com','$2a$10$5qqIVsBeD1d0U3yTFomFA.SMp1hIpyVadzLmkSlSZzlQ53Zd8lDIa','admin',1,2);
+INSERT INTO `users` VALUES ('cristophersoto@gmail.com','$2a$10$D3rWK86w6Dwk.wIjYKm1qO/ebCQIAWfELydb06M1LvyBnpwgTZGd6','admin',1,3);
+INSERT INTO `users` VALUES ('yahirdegante@gmail.com','$2a$10$faNl2cYtbyH5hV.UFY8nOeWfGm9TvvN6D.2bA3ZvAneSyK94Vtzn2','admin',1,4);
+INSERT INTO `users` VALUES ('jonathanramirez@gmail.com','$2a$10$3iNM.AIjH3rHDS.gs1BVfuSlhd1USEgEoPQyYB7sgQuLyhzy0ZX1i','veterinary',1,5);
+INSERT INTO `users` VALUES ('cabronjames@gmail.com','$2a$10$hNEZ9qC1OKqvhTcw33ohsOhUqlyHLgGLHcdFlrAZzh52HO/05RJ9a','cliente',1,6);
+
+#-----Inserts categories-----
+INSERT INTO `categories` VALUES (1,'Alimentos');
+INSERT INTO `categories` VALUES (2,'Juguetes');
+INSERT INTO `categories` VALUES (3,'Accesorios');
+
+#-----Inserts categories-----
+INSERT INTO `products` VALUES (1,'Pedigre','alimento para perro adulto 10 kg',257.00,1);
+INSERT INTO `products` VALUES (2,'Minino','alimento para gato 5 kg',66.00,1);
+INSERT INTO `products` VALUES (3,'Pelota','pelota de goma',50.00,2);
+INSERT INTO `products` VALUES (4,'Correa para gallo','Correa con pechera para gallo',250.00,3);
+
+
