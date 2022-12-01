@@ -66,7 +66,7 @@ CREATE TABLE `consultations` (
   UNIQUE KEY `consultation_id_UNIQUE` (`consultation_id`),
   KEY `fk_consultations_pets1_idx` (`pet_id`),
   CONSTRAINT `fk_consultations_pets1` FOREIGN KEY (`pet_id`) REFERENCES `pets` (`pet_id`)
-);*/
+);
 
 DROP TABLE IF EXISTS `consultations_has_medicines`;
 CREATE TABLE `consultations_has_medicines` (
@@ -78,6 +78,8 @@ CREATE TABLE `consultations_has_medicines` (
   CONSTRAINT `fk_consultations_has_medicines_consultations1` FOREIGN KEY (`consultation_id`) REFERENCES `consultations` (`consultation_id`),
   CONSTRAINT `fk_consultations_has_medicines_medicines1` FOREIGN KEY (`medicine_id`) REFERENCES `medicines` (`medicine_id`)
 );
+
+
 DROP TABLE IF EXISTS `consultations_has_products`;
 CREATE TABLE `consultations_has_products` (
   `consultation_id` bigint NOT NULL,
@@ -88,6 +90,7 @@ CREATE TABLE `consultations_has_products` (
   CONSTRAINT `fk_consultations_has_products_consultations1` FOREIGN KEY (`consultation_id`) REFERENCES `consultations` (`consultation_id`),
   CONSTRAINT `fk_consultations_has_products_products1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
 );
+
 DROP TABLE IF EXISTS `medicines`;
 CREATE TABLE `medicines` (
   `medicine_id` bigint NOT NULL AUTO_INCREMENT,
@@ -100,7 +103,9 @@ CREATE TABLE `medicines` (
   PRIMARY KEY (`medicine_id`),
   UNIQUE KEY `medicine_id_UNIQUE` (`medicine_id`),
   UNIQUE KEY `batch_UNIQUE` (`batch`)
-);
+);*/
+
+
 DROP TABLE IF EXISTS `payments`;
 CREATE TABLE `payments` (
   `payment_id` bigint NOT NULL,
@@ -112,6 +117,12 @@ CREATE TABLE `payments` (
   KEY `fk_payments_consultations1_idx` (`consultation_id`),
   CONSTRAINT `fk_payments_consultations1` FOREIGN KEY (`consultation_id`) REFERENCES `consultations` (`consultation_id`)
 );
+
+insert into `payments` values (1, '01-12-2022', '350.00', 1, 1);
+insert into `payments` values (2, '10-11-2022', '220.00', 2, 2);
+insert into `payments` values (3, '30-11-2022', '620.00', 3, 3);
+insert into `payments` values (4, '06-12-2022', '317.00', 4, 4);
+insert into `payments` values (5, '25-06-2022', '511.00', 5, 5);
 
 DROP TABLE IF EXISTS `services`;
 CREATE TABLE `services` (
@@ -133,12 +144,34 @@ CREATE TABLE `services_has_consultations` (
   CONSTRAINT `fk_services_has_consultations_services1` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`)
 );
 
+#-----`medicines`----
+insert into `medicines` values (1, 'Piroflox', 'Enrofloxacina', 'PiSa', '25486', '11-05-2023', 1);
+insert into `medicines` values (2, 'Omepra', 'Inhibidor', 'MederiLab', '14789', '12-04-2023', 2);
+insert into `medicines` values (3, 'Micofin', 'Terbinafina', 'Riverfarma', '98756', '02-03-2024', 3);
+insert into `medicines` values (4, 'Espiranide', 'Metronidazol', 'PiSa', '85367', '25-09-2024', 4);
+insert into `medicines` values (5, 'Vermiplex ', 'Puppy', 'PiSa', '59731', '14-01-2023', 5);
+
+
+
+#----`consultations_has_products`----
+insert into `consultations_has_products` values (21, 1, 21, 1);
+insert into `consultations_has_products` values (22, 2, 22, 2);
+insert into `consultations_has_products` values (23, 3, 23, 3);
+insert into `consultations_has_products` values (24, 4, 24, 4);
+
+#-----Inserts consultations_has_medicines ----
+insert into `consultations_has_medicines` values (11, 1, 11, 1 );
+insert into `consultations_has_medicines` values (12, 2, 12, 2 );
+insert into `consultations_has_medicines` values (13, 3, 13, 3 );
+insert into `consultations_has_medicines` values (14, 4, 14, 4 );
+insert into `consultations_has_medicines` values (15, 5, 15, 5 );
+
 #-----Inserts consultations---
-insert into `consultations` values (1,'01-12-2022', 1);
-insert into `consultations` values (2,'10-11-2022', 2);
-insert into `consultations` values (3,'30-11-2022', 3);
-insert into `consultations` values (4,'06-12-2022', 4);
-insert into `consultations` values (5,'25-06-2022', 5);
+insert into `consultations` values (1,'01-12-2022', 1, 1, 1);
+insert into `consultations` values (2,'10-11-2022', 2, 2, 2);
+insert into `consultations` values (3,'30-11-2022', 3, 3, 3);
+insert into `consultations` values (4,'06-12-2022', 4, 4, 4);
+insert into `consultations` values (5,'25-06-2022', 5, 5, 5);
 
 INSERT INTO `users` VALUES (1,'josafatmunoz5@gmail.com','$2a$10$5qqIVsBeD1d0U3yTFomFA.SMp1hIpyVadzLmkSlSZzlQ53Zd8lDIa','admin',1,2);
 #-----Inserts Pets-----
