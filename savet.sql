@@ -103,7 +103,7 @@ CREATE TABLE `medicines` (
   PRIMARY KEY (`medicine_id`),
   UNIQUE KEY `medicine_id_UNIQUE` (`medicine_id`),
   UNIQUE KEY `batch_UNIQUE` (`batch`)
-);*/
+);
 
 
 DROP TABLE IF EXISTS `payments`;
@@ -116,13 +116,8 @@ CREATE TABLE `payments` (
   UNIQUE KEY `id_payment_UNIQUE` (`payment_id`),
   KEY `fk_payments_consultations1_idx` (`consultation_id`),
   CONSTRAINT `fk_payments_consultations1` FOREIGN KEY (`consultation_id`) REFERENCES `consultations` (`consultation_id`)
-);
+);*/
 
-insert into `payments` values (1, '01-12-2022', '350.00', 1, 1);
-insert into `payments` values (2, '10-11-2022', '220.00', 2, 2);
-insert into `payments` values (3, '30-11-2022', '620.00', 3, 3);
-insert into `payments` values (4, '06-12-2022', '317.00', 4, 4);
-insert into `payments` values (5, '25-06-2022', '511.00', 5, 5);
 
 DROP TABLE IF EXISTS `services`;
 CREATE TABLE `services` (
@@ -144,14 +139,20 @@ CREATE TABLE `services_has_consultations` (
   CONSTRAINT `fk_services_has_consultations_services1` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`)
 );
 
+#-----`payments`----
+insert into `payments` values (1, '01-12-2022', '350.00', 1, 1);
+insert into `payments` values (2, '10-11-2022', '220.00', 2, 2);
+insert into `payments` values (3, '30-11-2022', '620.00', 3, 3);
+insert into `payments` values (4, '06-12-2022', '317.00', 4, 4);
+insert into `payments` values (5, '25-06-2022', '511.00', 5, 5);
+
+
 #-----`medicines`----
 insert into `medicines` values (1, 'Piroflox', 'Enrofloxacina', 'PiSa', '25486', '11-05-2023', 1);
 insert into `medicines` values (2, 'Omepra', 'Inhibidor', 'MederiLab', '14789', '12-04-2023', 2);
 insert into `medicines` values (3, 'Micofin', 'Terbinafina', 'Riverfarma', '98756', '02-03-2024', 3);
 insert into `medicines` values (4, 'Espiranide', 'Metronidazol', 'PiSa', '85367', '25-09-2024', 4);
 insert into `medicines` values (5, 'Vermiplex ', 'Puppy', 'PiSa', '59731', '14-01-2023', 5);
-
-
 
 #----`consultations_has_products`----
 insert into `consultations_has_products` values (21, 1, 21, 1);
