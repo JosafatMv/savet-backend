@@ -1,4 +1,5 @@
-/*DROP TABLE IF EXISTS `categories`;
+
+DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
   `category_id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -56,7 +57,6 @@ CREATE TABLE `users` (
   KEY `fk_users_personals1_idx` (`personal_id`),
   CONSTRAINT `fk_users_personals1` FOREIGN KEY (`personal_id`) REFERENCES `personal` (`personal_id`)
 );
-
 DROP TABLE IF EXISTS `consultations`;
 CREATE TABLE `consultations` (
   `consultation_id` bigint NOT NULL AUTO_INCREMENT,
@@ -67,7 +67,6 @@ CREATE TABLE `consultations` (
   KEY `fk_consultations_pets1_idx` (`pet_id`),
   CONSTRAINT `fk_consultations_pets1` FOREIGN KEY (`pet_id`) REFERENCES `pets` (`pet_id`)
 );
-
 DROP TABLE IF EXISTS `consultations_has_medicines`;
 CREATE TABLE `consultations_has_medicines` (
   `consultation_id` bigint NOT NULL,
@@ -78,8 +77,6 @@ CREATE TABLE `consultations_has_medicines` (
   CONSTRAINT `fk_consultations_has_medicines_consultations1` FOREIGN KEY (`consultation_id`) REFERENCES `consultations` (`consultation_id`),
   CONSTRAINT `fk_consultations_has_medicines_medicines1` FOREIGN KEY (`medicine_id`) REFERENCES `medicines` (`medicine_id`)
 );
-
-
 DROP TABLE IF EXISTS `consultations_has_products`;
 CREATE TABLE `consultations_has_products` (
   `consultation_id` bigint NOT NULL,
@@ -90,7 +87,6 @@ CREATE TABLE `consultations_has_products` (
   CONSTRAINT `fk_consultations_has_products_consultations1` FOREIGN KEY (`consultation_id`) REFERENCES `consultations` (`consultation_id`),
   CONSTRAINT `fk_consultations_has_products_products1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
 );
-
 DROP TABLE IF EXISTS `medicines`;
 CREATE TABLE `medicines` (
   `medicine_id` bigint NOT NULL AUTO_INCREMENT,
@@ -104,8 +100,6 @@ CREATE TABLE `medicines` (
   UNIQUE KEY `medicine_id_UNIQUE` (`medicine_id`),
   UNIQUE KEY `batch_UNIQUE` (`batch`)
 );
-
-
 DROP TABLE IF EXISTS `payments`;
 CREATE TABLE `payments` (
   `payment_id` bigint NOT NULL,
@@ -116,7 +110,7 @@ CREATE TABLE `payments` (
   UNIQUE KEY `id_payment_UNIQUE` (`payment_id`),
   KEY `fk_payments_consultations1_idx` (`consultation_id`),
   CONSTRAINT `fk_payments_consultations1` FOREIGN KEY (`consultation_id`) REFERENCES `consultations` (`consultation_id`)
-);*/
+);
 
 
 DROP TABLE IF EXISTS `services`;
@@ -127,7 +121,9 @@ CREATE TABLE `services` (
   `price` double NOT NULL,
   PRIMARY KEY (`service_id`),
   UNIQUE KEY `service_id_UNIQUE` (`service_id`)
-);
+);*
+
+
 DROP TABLE IF EXISTS `services_has_consultations`;
 CREATE TABLE `services_has_consultations` (
   `service_id` bigint NOT NULL,
@@ -138,6 +134,21 @@ CREATE TABLE `services_has_consultations` (
   CONSTRAINT `fk_services_has_consultations_consultations1` FOREIGN KEY (`consultation_id`) REFERENCES `consultations` (`consultation_id`),
   CONSTRAINT `fk_services_has_consultations_services1` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`)
 );
+
+#-----`services_has_consultations`----
+insert insert`services_has_consultations` values (1 ,1);
+insert insert`services_has_consultations` values (2 ,2);
+insert insert`services_has_consultations` values (3 ,3);
+insert insert`services_has_consultations` values (4 ,4);
+insert insert`services_has_consultations` values (5 ,5);
+
+#-----`services`-----
+insert into `services` values (1, 'Dermatología', 'Se realiza estudios de la piel y pelo', 350.00);
+insert into `services` values (2, 'Alimentación', 'Te recomiendan consejos para una buena alimentacion', 200.00);
+insert into `services` values (3, 'Estomatología', 'Se realiza estudios de la dentadura', 180.00);
+insert into `services` values (4, 'Higiene y prevención', 'Productos para cuidar a tu mascota', 600.00);
+insert into `services` values (5, 'Oftalmología', 'Se realiza estudios oculares', 250.00);
+
 
 #-----`payments`----
 insert into `payments` values (1, '01-12-2022', '350.00', 1, 1);
