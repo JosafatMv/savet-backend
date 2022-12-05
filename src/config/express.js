@@ -32,8 +32,8 @@ app.get('/', (request, response) => {
 });
 
 app.use('/api/category', categoryRouter);
-app.use('/api/personal', personalRouter);
 app.use('/api/user', userRouter);
+// app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/pet', petRouter);
 app.use('/api/service', serviceRouter);

@@ -8,7 +8,8 @@ const {
 	deleteById,
 	updateById,
 	updatePassword,
-} = require('./personal.gateway');
+	updateStatus,
+} = require('./users.gateway');
 const { validateJWT } = require('../../middlewares/validate-jwt');
 const { auth, checkRoles } = require('../../config/jwt');
 
@@ -38,19 +39,24 @@ const getById = async (req, res = Response) => {
 
 const insert = async (req, res = Response) => {
 	try {
-		const { name, lastname, surname, birthdate } = req.body;
+		const { name, lastname, surname, birthdate, email, password, role } =
+			req.body;
 		const result = await save({
 			name,
 			lastname,
 			surname,
 			birthdate,
+			email,
+			password,
+			role,
+			status: 1,
 		});
 
-		const personalRegistered = {
-			result,
-		};
+		// const userRegistered = {
+		// 	result,
+		// };
 
-		res.status(200).json(personalRegistered);
+		res.status(200).json(result);
 	} catch (err) {
 		console.log(err);
 		const message = validateError(err);
@@ -64,7 +70,31 @@ const remove = async (req, res = Response) => {
 		if (Number.isNaN(id)) throw Error('Wrong type');
 		const results = await deleteById(id);
 		res.status(200).json({
-			message: 'Personal deleted',
+			message: 'User deleted',
+		});
+	} catch (err) {
+		console.log(err);
+		const message = validateError(err);
+		res.status(400).json({ message });
+	}
+};
+
+const changeStatus = async (req, res = Response) => {
+	try {
+		const { user_id, status } = req.body;
+
+		const userExist = await findById(user_id);
+		if (!userExist[0]?.user_id) {
+			return res.status(400).json({
+				message: 'User not found',
+			});
+		}
+
+		const statusToChange = status === 0 ? 1 : 0;
+		console.log(user_id, statusToChange);
+		const results = await updateStatus(user_id, statusToChange);
+		res.status(200).json({
+			message: 'User status updated',
 		});
 	} catch (err) {
 		console.log(err);
@@ -75,17 +105,29 @@ const remove = async (req, res = Response) => {
 
 const update = async (req, res = Response) => {
 	try {
-		const { id } = req.params;
-		if (Number.isNaN(id)) throw Error('Wrong type');
-		const { name, surname, lastname, birthdate } = req.body;
-		const results = await updateById(id, {
+		const { user_id, name, surname, lastname, birthdate, role, status } =
+			req.body;
+		if (Number.isNaN(user_id)) throw Error('Wrong type');
+		const results = await updateById({
+			user_id,
 			name,
 			surname,
 			lastname,
 			birthdate,
+			role,
+			status,
 		});
 		res.status(200).json({
-			message: 'Personal updated',
+			message: 'User updated',
+			user: {
+				user_id,
+				name,
+				surname,
+				lastname,
+				birthdate,
+				role,
+				status,
+			},
 		});
 	} catch (err) {
 		console.log(err);
@@ -94,17 +136,14 @@ const update = async (req, res = Response) => {
 	}
 };
 
-const personalRouter = Router();
-personalRouter.get('/', [auth, checkRoles(['admin', 'veterinary'])], getAll);
-personalRouter.get(
-	'/:id',
-	[auth, checkRoles(['admin', 'veterinary'])],
-	getById
-);
-personalRouter.post('/', [], insert);
-personalRouter.delete('/:id', [auth, checkRoles(['admin'])], remove);
-personalRouter.put('/:id', [], update);
+const userRouter = Router();
+userRouter.get('/', [auth, checkRoles(['admin', 'veterinary'])], getAll);
+userRouter.get('/:id', [auth], getById);
+userRouter.post('/', [], insert);
+userRouter.delete('/', [auth, checkRoles(['admin'])], changeStatus);
+// userRouter.delete('/:id', [auth, checkRoles(['admin'])], remove);
+userRouter.put('/', [], update);
 
 module.exports = {
-	personalRouter,
+	userRouter,
 };
