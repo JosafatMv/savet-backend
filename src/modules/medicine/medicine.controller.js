@@ -7,6 +7,7 @@ const {
 	findAll,
 	updateById,
 	deleteById,
+	updateStatus,
 } = require('./medicine.gateway');
 
 const getAll = async (req, res = Response) => {
@@ -24,6 +25,10 @@ const getById = async (req, res = Response) => {
 	try {
 		const { id } = req.params;
 		if (Number.isNaN(id)) throw Error('Wrong type');
+
+		const medicineExists = await findById(id);
+		if (!medicineExists) throw Error('Medicine not found');
+
 		const results = await findById(id);
 		res.status(200).json(results);
 	} catch (err) {
@@ -44,16 +49,18 @@ const insert = async (req, res = Response) => {
 			batch,
 			date_expiry,
 			price,
+			status: 1,
 		});
 
 		const medicineRegistered = {
-			id: results.insertId,
+			medicine_id: results.insertId,
 			tradename,
 			scientific_name,
 			brand,
 			batch,
 			date_expiry,
 			price,
+			status: 1,
 		};
 
 		res.status(200).json(medicineRegistered);
@@ -66,29 +73,64 @@ const insert = async (req, res = Response) => {
 
 const update = async (req, res = Response) => {
 	try {
-		const { id } = req.params;
-		const { tradename, scientific_name, brand, batch, date_expiry, price } =
-			req.body;
-		const results = await updateById(id, {
+		const {
+			medicine_id,
 			tradename,
 			scientific_name,
 			brand,
 			batch,
 			date_expiry,
 			price,
+			status,
+		} = req.body;
+
+		const medicineExists = await findById(medicine_id);
+		if (!medicineExists) throw Error('Medicine not found');
+
+		const results = await updateById({
+			medicine_id,
+			tradename,
+			scientific_name,
+			brand,
+			batch,
+			date_expiry,
+			price,
+			status,
 		});
 
 		const medicineUpdated = {
-			id,
+			medicine_id,
 			tradename,
 			scientific_name,
 			brand,
 			batch,
 			date_expiry,
 			price,
+			status,
 		};
 
 		res.status(200).json(medicineUpdated);
+	} catch (err) {
+		console.log(err);
+		const message = validateError(err);
+		res.status(400).json({ message });
+	}
+};
+
+const changeStatus = async (req, res = Response) => {
+	try {
+		const { medicine_id, status } = req.body;
+		if (Number.isNaN(medicine_id)) throw Error('Wrong type');
+
+		const medicineExists = await findById(medicine_id);
+		if (!medicineExists) throw Error('Medicine not found');
+
+		const statusUpdate = status === 1 ? 0 : 1;
+
+		const results = await updateStatus({ medicine_id, statusUpdate });
+		res.status(200).json({
+			message: 'Medicine status changed',
+		});
 	} catch (err) {
 		console.log(err);
 		const message = validateError(err);
@@ -115,8 +157,8 @@ const medicineRouter = Router();
 medicineRouter.get('/', [auth], getAll);
 medicineRouter.get('/:id', [auth], getById);
 medicineRouter.post('/', [auth, checkRoles(['admin'])], insert);
-medicineRouter.put('/:id', [auth, checkRoles(['admin'])], update);
-medicineRouter.delete('/:id', [auth, checkRoles(['admin'])], remove);
+medicineRouter.put('/', [auth, checkRoles(['admin'])], update);
+medicineRouter.delete('/', [auth, checkRoles(['admin'])], changeStatus);
 
 module.exports = {
 	medicineRouter,

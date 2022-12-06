@@ -106,7 +106,6 @@ const changeStatus = async (req, res = Response) => {
 		if (Number.isNaN(pet_id)) throw Error('Wrong type');
 
 		const petExists = await findById(pet_id);
-		console.log(petExists);
 		if (!petExists[0]?.pet_id) {
 			return res.status(400).json({
 				message: 'Pet not found',
