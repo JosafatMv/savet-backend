@@ -19,18 +19,20 @@ const save = async (product) => {
 		!product.description ||
 		!product.price ||
 		!product.status ||
-		!product.category
+		!product.category ||
+		!product.img_url
 	)
 		throw Error('Missing fields');
 
 	const sql =
-		'INSERT INTO products (name, description, price, status, category_id) VALUES (?,?,?,?,?);';
+		'INSERT INTO products (name, description, price, status, img_url, category_id) VALUES (?,?,?,?,?,?);';
 
 	return await query(sql, [
 		product.name,
 		product.description,
 		product.price,
 		product.status,
+		product.img_url,
 		product.category.category_id,
 	]);
 };
@@ -47,12 +49,13 @@ const updateById = async (product) => {
 		throw Error('Missing fields');
 
 	const sql =
-		'UPDATE products SET name = ?, description = ?, price = ?, status = ?, category_id = ? WHERE product_id = ?';
+		'UPDATE products SET name = ?, description = ?, price = ?, status = ?, img_url = ?, category_id = ? WHERE product_id = ?';
 	return await query(sql, [
 		product.name,
 		product.description,
 		product.price,
 		product.status,
+		product.img_url,
 		product.category.category_id,
 		product.product_id,
 	]);

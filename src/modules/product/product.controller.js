@@ -36,13 +36,14 @@ const getById = async (req, res = Response) => {
 
 const insert = async (req, res = Response) => {
 	try {
-		const { name, description, price, category } = req.body;
+		const { name, description, price, img_url, category } = req.body;
 		const results = await save({
 			name,
 			description,
 			price,
 			status: 1,
 			category,
+			img_url,
 		});
 
 		const productRegistered = {
@@ -51,6 +52,7 @@ const insert = async (req, res = Response) => {
 			description,
 			price,
 			category,
+			img_url,
 			status: 1,
 		};
 
@@ -64,8 +66,15 @@ const insert = async (req, res = Response) => {
 
 const update = async (req, res = Response) => {
 	try {
-		const { product_id, name, description, price, category, status } =
-			req.body;
+		const {
+			product_id,
+			name,
+			description,
+			price,
+			category,
+			status,
+			img_url,
+		} = req.body;
 		if (Number.isNaN(product_id)) throw Error('Wrong type');
 
 		const productExists = await findById(product_id);
@@ -82,6 +91,7 @@ const update = async (req, res = Response) => {
 			price,
 			status,
 			category,
+			img_url,
 		});
 
 		const productUpdated = {
@@ -91,6 +101,7 @@ const update = async (req, res = Response) => {
 			price,
 			status,
 			category,
+			img_url,
 		};
 
 		res.status(200).json(productUpdated);
