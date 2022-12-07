@@ -9,6 +9,8 @@ const login = async (user) => {
                  WHERE email = ?
                    AND status = 1;`;
 	const existsUser = await query(sql, [user.email]);
+	console.log(existsUser);
+	if (existsUser.length === 0) throw Error('User not found');
 	if (await validatePassword(user.password, existsUser[0].password)) {
 		const token = await generateToken({
 			id: existsUser[0].user_id,
