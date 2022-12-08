@@ -5,7 +5,8 @@ const { petRouter } = require('./pet/pet.controller');
 const { serviceRouter } = require('./service/service.controller');
 const { medicineRouter } = require('./medicine/medicine.controller');
 const { productRouter } = require('./product/product.controller');
-const { paymentRouter } = require('./payment/payment.controller')
+const { paymentRouter } = require('./payment/payment.controller');
+const { consultationRouter } = require('./consultation/consultation.controller');
 
 module.exports = {
 	categoryRouter,
@@ -15,5 +16,6 @@ module.exports = {
 	serviceRouter,
 	medicineRouter,
 	productRouter,
-	paymentRouter
+	paymentRouter,
+    consultationRouter,
 };

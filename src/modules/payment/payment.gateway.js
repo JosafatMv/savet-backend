@@ -43,17 +43,6 @@ const updateById = async (payment) => {
     ])
 }
 
-const updateStatus = async(payment) => {
-    if(!payment.payment_id)
-    throw Error('Missing fields')
-
-    const sql = 'UPDATE payments SET status = ? WHERE payment_id = ?'
-    return await query(sql, [
-        payment.statusUpdate,
-        payment.payment_id
-    ])
-}
-
 const deleteById = async(id) => {
     if(!id) throw Error('Missing fields')
     const sql = 'DELETE FROM payment WHERE payment_id = ?'
@@ -65,6 +54,5 @@ module.exports = {
 	findById,
 	save,
 	updateById,
-	updateStatus,
 	deleteById,
 }

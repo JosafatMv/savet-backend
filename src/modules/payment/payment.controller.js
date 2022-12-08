@@ -1,14 +1,7 @@
 const { Response, Router } = require('express');
 const { checkRoles, auth } = require('../../config/jwt');
 const { validateError } = require('../../utils/functions');
-const {
-	findAll,
-	findById,
-	save,
-	updateById,
-	deleteById,
-	updateStatus,
-} = require('./payment.gateway');
+const { findAll, findById, save, updateById, deleteById } = require('./payment.gateway');
 
 const getAll = async(req, res = Response) => {
 	try {
@@ -94,31 +87,7 @@ const update = async(req, res = Response) => {
 		res.status(200).json(paymentUpdated)
 	} catch(err) {
 		console.log(err);
-		res.status(400).json({ message })
-	}
-}
-
-const changeStatus = async(req, res = Response) => {
-	try	{
-		const {
-			payment_id,
-			status
-		} = req.body
-
-		const paymentExists = await findById(payment_id)
-		if(!paymentExists) throw Error('Payment not found')
-
-		const statusUpdate = status === 1 ? 0 : 1
-
-		const result = await updateStatus({
-			payment_id,
-			statusUpdate
-		})
-
-		req.status(200).json({ message: 'Payment status changed'})
-
-	} catch(err) {
-		console.log(err);
+		const message = validateError(err)
 		res.status(400).json({ message })
 	}
 }
@@ -128,7 +97,6 @@ paymentRouter.get('/', [auth], getAll)
 paymentRouter.get('/', [auth], getById)
 paymentRouter.post('/', [auth, checkRoles(['veterinary']), insert])
 paymentRouter.put('/', [auth, checkRoles(['veterinary']), update])
-paymentRouter.delete('/', [auth, checkRoles(['veterinary'])], changeStatus)
 
 module.exports = {
 	paymentRouter	
