@@ -12,6 +12,7 @@ const {
 } = require('./users.gateway');
 const { validateJWT } = require('../../middlewares/validate-jwt');
 const { auth, checkRoles } = require('../../config/jwt');
+const { transporter } = require('../../utils/email-service');
 
 const getAll = async (req, res = Response) => {
 	try {
@@ -51,6 +52,14 @@ const insert = async (req, res = Response) => {
 			role,
 			status: 1,
 		});
+
+		const info = await transporter.sendMail({
+			from: `Petmania <${ process.env.EMAIL_USER }>`,
+			to: email,
+			subject: 'Registro exitoso',
+			text: 'Bienvenido a Petmania'
+		  });
+		  console.log(info);
 
 		// const userRegistered = {
 		// 	result,

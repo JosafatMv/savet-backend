@@ -18,11 +18,7 @@ const getById = async(req, res = Response) => {
 	try {
 		const { id } = req.params
 		if (Number.isNaN(id)) throw Error('Wrong type')
-
-		const paymentExists = await findById();
-		if(!paymentExists) throw Error('Payment not found')
-
-		const results = await findAll()
+		const results = await findById(id);
 		res.status(200).json(results)
 	} catch(err) {
 		console.log(err);
@@ -33,20 +29,15 @@ const getById = async(req, res = Response) => {
 
 const insert = async(req, res = Response) => {
 	try {
-		const {
+		const { date, amount, consultation_id } = req.body;
+		const results = await save({
 			date,
 			amount,
 			consultation_id
-		} = req.body
-
-		const result = await save({
-			date,
-			amount,
-			consultation_id
-		})
-
+		});
+		
 		const paymentRegisted = {
-			payment_id: result.paymentId,
+			payment_id: results.paymentId,
 			date,
 			amount,
 			consultation_id
@@ -94,9 +85,9 @@ const update = async(req, res = Response) => {
 
 const paymentRouter = Router();
 paymentRouter.get('/', [auth], getAll)
-paymentRouter.get('/', [auth], getById)
-paymentRouter.post('/', [auth, checkRoles(['veterinary']), insert])
-paymentRouter.put('/', [auth, checkRoles(['veterinary']), update])
+paymentRouter.get('/:id', [auth], getById);
+paymentRouter.post('/', [auth, checkRoles(['admin','veterinary']), insert])
+paymentRouter.put('/', [auth, checkRoles(['admin','veterinary']), update])
 
 module.exports = {
 	paymentRouter	

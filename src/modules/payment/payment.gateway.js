@@ -5,8 +5,9 @@ const findAll = async () => {
     return await query(sql, []);
 }
 
-const findById = async() => {
-    const sql = 'SELECT * FROM medicine WHERE payment_id = ?'
+const findById = async(id) => {
+    if (!id) throw Error('Missing fields');
+    const sql = 'SELECT * FROM payments WHERE payment_id = ?'
     return await query(sql, [id])
 }
 
@@ -15,16 +16,15 @@ const save = async (payment) => {
         !payment.date   ||
         !payment.amount ||
         !payment.consultation?.consultation_id
-    )
-    throw Error('Missing fields');
+    ) throw Error('Missing fields');
 
     const sql = 'INSERT INTO payments (date, amount, consultation_id) VALUES(?, ?, ?);'
     return await query(sql, [
         payment.date,
         payment.amount,
         payment.consultation.consultation_id
-    ])
-}
+    ]);
+};
 
 const updateById = async (payment) => {
     if (
