@@ -1,10 +1,5 @@
-
--- -----------------------------------------------------
--- Schema savet
--- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `savet` DEFAULT CHARACTER SET utf8 ;
 USE `savet` ;
-
 -- -----------------------------------------------------
 -- Table `savet`.`categories`
 -- -----------------------------------------------------
@@ -14,7 +9,20 @@ CREATE TABLE IF NOT EXISTS `savet`.`categories` (
   `name` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`category_id`),
   UNIQUE INDEX `category_id_UNIQUE` (`category_id` ASC) VISIBLE);
+  
+-- -----------------------------------------------------
+-- Table `savet`.`emails_users`
+-- -----------------------------------------------------
 
+CREATE TABLE `savet`.`email_users` (
+  `email_id` BIGINT NOT NULL,
+  `email` VARCHAR(100) NOT NULL,
+  `role` VARCHAR(15) NOT NULL,
+  `status` TINYINT NOT NULL,
+  `password` VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`email_id`),
+  UNIQUE INDEX `email_id_UNIQUE` (`email_id` ASC) VISIBLE,
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);
 
 -- -----------------------------------------------------
 -- Table `savet`.`users`
@@ -26,14 +34,14 @@ CREATE TABLE IF NOT EXISTS `savet`.`users` (
   `surname` VARCHAR(30) NOT NULL,
   `lastname` VARCHAR(30) NOT NULL,
   `birthdate` DATE NOT NULL,
-  `email` VARCHAR(100) NOT NULL,
-  `password` VARCHAR(200) NOT NULL,
-  `role` VARCHAR(15) NOT NULL,
-  `status` TINYINT NOT NULL,
+  `email_id` BIGINT NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE INDEX `user_id_UNIQUE` (`user_id` ASC) VISIBLE,
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);
-
+  /*UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);*/
+  INDEX `email_id_idx` (`email_id` ASC) VISIBLE,
+  CONSTRAINT `email_id`
+  FOREIGN KEY (`email_id`)
+  REFERENCES `savet`.`email_users` (`email_id`));
 
 -- -----------------------------------------------------
 -- Table `savet`.`pets`
@@ -191,9 +199,3 @@ CREATE TABLE IF NOT EXISTS `savet`.`services_has_consultations` (
   CONSTRAINT `fk_services_has_consultations_services1`
     FOREIGN KEY (`service_id`)
     REFERENCES `savet`.`services` (`service_id`));
-    
-INSERT INTO `pets` VALUES (1,'Gatote','Cat','Male',7,1,5),(2,'Rodolfo','Gato','Masculino',5,1,1);
-INSERT INTO `users` VALUES (1,'Josafat','Muñoz','Valverde','2003-04-19','josafatmunoz5@gmail.com','$2a$10$N0hNFKnxiGvjnEHfB7ID9eJ6DsS.o/DGtrHH/xkoC8aC/rK9l7Us.','admin',1),(2,'Jonathan','Ramirez','Garcia','2003-09-20','jonathanramirez@gmail.com','$2a$10$hU2VgoPNa4N8.Y50jJpmtuujFvXn0Zq//2sTevJD3Zehhpw6susdW','veterinary',1),(3,'Cristopher','Soto','Ventura','2003-07-21','cristophersoto@gmail.com','$2a$10$azOUAGd/WrQnDR2E.9wJEuRCS1jvk8O7H6DijwPOUwzktirFvWRGS','admin',1),(4,'Yahir','Degante','Salinas','2003-12-08','yahirdegante@gmail.com','$2a$10$gGI5SiEGwti.Z/KePFazHu7rE715O24V6XgfXBsgm71CbvfzoukAG','admin',1),(5,'Cabron','James','xd','2003-02-12','cabronjames@gmail.com','$2a$10$cZl4P80IKjXUmgba3ewel.rkri59RsAXRzMKXs8aCG4NqzYjvcilS','client',1),(6,'Lionel Andres','Messi','Cuccitini','1985-09-20','messi@gmail.com','$2a$10$CkiN3Omzx3impHHuI49BuOmwbLlwl0Aka7WuZnODUbJxeP.K0kOCW','client',1);
-
-insert into consultations values(2,sysdate(),1),(3,sysdate(),2),(4,sysdate(),1),(5,sysdate(),2);
-insert into payments values(2, sysdate(), 120, 3),(3, sysdate(), 5180, 1),(4, sysdate(), 9200, 1),(5, sysdate(), 28110, 2),(6, sysdate(), 10, 1);
