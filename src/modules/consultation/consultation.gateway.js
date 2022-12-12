@@ -6,6 +6,13 @@ const findAll = async () => {
 	return await query(sql, []);
 };
 
+const findAllOwnerConsultations = async (id) => {
+	if (!id) throw Error('Missing fields');
+	const sql =
+		"SELECT c.*, p.name, concat(u.name, ' ', u.surname, ' ', COALESCE(u.lastname,'') ) as 'owner'FROM consultations c INNER JOIN pets p on c.pet_id=p.pet_id INNER JOIN users u on u.user_id=p.user_id WHERE p.user_id = ?;";
+	return await query(sql, [id]);
+};
+
 const findById = async () => {
 	const sql =
 		"SELECT c.*, p.name, concat(u.name, ' ', u.surname, ' ', COALESCE(u.lastname,'') ) as 'owner'FROM consultations c INNER JOIN pets p on c.pet_id=p.pet_id INNER JOIN users u on u.user_id=p.user_id WHERE consultation_id = ?";
@@ -83,6 +90,7 @@ const findConsultationServices = async (consultationId) => {
 
 module.exports = {
 	findAll,
+	findAllOwnerConsultations,
 	findById,
 	save,
 	saveConsultationService,

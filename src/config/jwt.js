@@ -25,7 +25,6 @@ const checkRoles = (roles) => {
 	return async (req, res, next) => {
 		try {
 			const token = req.token;
-			console.log(token);
 			if (!token) throw Error('');
 			if (!roles.some((role) => role === token.role)) throw Error('');
 			next();

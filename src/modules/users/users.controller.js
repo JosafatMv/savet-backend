@@ -7,11 +7,9 @@ const {
 	save,
 	deleteById,
 	updateById,
-	updatePassword,
 	updateStatus,
 	findByEmail,
 } = require('./users.gateway');
-const { validateJWT } = require('../../middlewares/validate-jwt');
 const { auth, checkRoles, generateToken } = require('../../config/jwt');
 const { transporter, template } = require('../../utils/email-service');
 

@@ -24,6 +24,12 @@ const validateError = (error) => {
 			return 'User does not exist';
 		case 'Missing services':
 			return 'Service are required';
+		case 'You are not authorized to perform this action':
+			return 'You are not authorized to perform this action';
+		case 'Payment not found':
+			return 'Check payment id';
+		case 'Payment already made':
+			return 'Payment already made';
 		default:
 			return 'Review request';
 	}

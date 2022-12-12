@@ -5,6 +5,12 @@ const findAll = async () => {
 	return await query(sql, []);
 };
 
+const findAllOwnPayments = async (id) => {
+	if (!id) throw Error('Missing fields');
+	const sql = 'SELECT * from PaymentsInformation WHERE user_id = ?;';
+	return await query(sql, [id]);
+};
+
 const findById = async (id) => {
 	if (!id) throw Error('Missing fields');
 	const sql = 'SELECT * FROM PaymentsInformation WHERE payment_id = ?';
@@ -21,6 +27,13 @@ const save = async (payment) => {
 		payment.amount,
 		payment.consultation.consultation_id,
 	]);
+};
+
+const makePayment = async (payment) => {
+	if (!payment.payment_id) throw Error('Missing fields');
+
+	const sql = 'UPDATE payments SET paid = 1 WHERE payment_id = ?;';
+	return await query(sql, [payment.payment_id]);
 };
 
 const updateById = async (payment) => {
@@ -49,8 +62,10 @@ const deleteById = async (id) => {
 
 module.exports = {
 	findAll,
+	findAllOwnPayments,
 	findById,
 	save,
+	makePayment,
 	updateById,
 	deleteById,
 };

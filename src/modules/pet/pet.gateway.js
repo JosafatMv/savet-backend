@@ -6,6 +6,13 @@ const findAll = async () => {
 	return await query(sql, []);
 };
 
+const findAllOwnerPets = async (id) => {
+	if (!id) throw Error('Missing fields');
+	const sql =
+		"SELECT pt.*, concat(u.name, ' ', u.surname, ' ', COALESCE(u.lastname,'') ) as 'owner' FROM pets pt INNER JOIN users u ON pt.user_id = u.user_id WHERE pt.user_id = ?;";
+	return await query(sql, [id]);
+};
+
 const findById = async (id) => {
 	if (!id) throw Error('Missing fields');
 	const sql =
@@ -75,6 +82,7 @@ const deleteById = async (id) => {
 module.exports = {
 	findAll,
 	findById,
+	findAllOwnerPets,
 	save,
 	updateById,
 	updateStatus,

@@ -21,8 +21,8 @@ const signin = async (req, res = Response) => {
 
 const validateToken = async (req, res = Response) => {
 	try {
-		const { id, email, role } = req;
-		const user = await revalidateToken(id, email, role);
+		const { id, email, role, isConfirmed } = req;
+		const user = await revalidateToken(id, email, role, isConfirmed);
 		res.status(200).json({
 			user,
 		});
@@ -49,8 +49,6 @@ const confirmEmail = async (req, res = Response) => {
 		if (emailExist[0].code !== code) throw Error('Token is not valid');
 
 		await updateEmailStatus(emailExist[0].email);
-
-		console.log(result);
 
 		res.status(200).json({
 			message: 'Email confirmed',

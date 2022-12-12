@@ -12,16 +12,76 @@ const {
 	saveConsultationService,
 	saveConsultationProduct,
 	saveConsultationMedicine,
+	findAllOwnerConsultations,
 } = require('./consultation.gateway');
 
 const { save: savePayment } = require('../payment/payment.gateway');
 const { findById: findService } = require('../service/service.gateway');
 const { findById: findMedicine } = require('../medicine/medicine.gateway');
 const { findById: findProduct } = require('../product/product.gateway');
+const { findById: findUser } = require('../../modules/users/users.gateway');
 
 const getAll = async (req, res = Response) => {
 	try {
 		const results = await findAll();
+		let consults;
+
+		const promises = results.map(async (consult) => {
+			const medicines = await findConsultationMedicines(
+				consult.consultation_id
+			);
+
+			const products = await findConsultationProducts(
+				consult.consultation_id
+			);
+
+			const services = await findConsultationServices(
+				consult.consultation_id
+			);
+
+			return {
+				...consult,
+				medicines,
+				products,
+				services,
+			};
+		});
+
+		consults = await Promise.all(promises);
+
+		res.status(200).json(consults);
+	} catch (err) {
+		console.log(err);
+		const message = validateError(err);
+		res.status(400).json({ message });
+	}
+};
+
+const getAllOwnerConsultations = async (req, res = Response) => {
+	try {
+		const { token } = req;
+		const { id } = req.params;
+
+		if (Number.isNaN(id)) throw Error('Wrong type');
+
+		const idNumber = parseInt(id);
+
+		if (token.id !== idNumber) {
+			return res.status(400).json({
+				message: 'You are not authorized to perform this action',
+			});
+		}
+
+		const userExists = await findUser(id);
+
+		if (!userExists[0]?.user_id) {
+			return res.status(400).json({
+				message: 'User not found',
+			});
+		}
+
+		const results = await findAllOwnerConsultations(id);
+
 		let consults;
 
 		const promises = results.map(async (consult) => {
@@ -109,7 +169,7 @@ const insert = async (req, res = Response) => {
 		if (medicines.length > 0) {
 			medicinesInfo = await Promise.all(
 				medicines.map(async (medicine) => {
-					return await findService(medicine.medicine_id);
+					return await findMedicine(medicine.medicine_id);
 				})
 			);
 
@@ -121,7 +181,7 @@ const insert = async (req, res = Response) => {
 		if (products.length > 0) {
 			productsInfo = await Promise.all(
 				products.map(async (product) => {
-					return await findService(product.product_id);
+					return await findProduct(product.product_id);
 				})
 			);
 
@@ -157,7 +217,12 @@ const insert = async (req, res = Response) => {
 };
 
 const consultationRouter = Router();
-consultationRouter.get('/', [auth], getAll);
+consultationRouter.get(
+	'/',
+	[auth, checkRoles(['admin', 'veterinary'])],
+	getAll
+);
+consultationRouter.get('/owner/:id', [auth], getAllOwnerConsultations);
 consultationRouter.post(
 	'/',
 	[auth, checkRoles(['admin', 'veterinary'])],

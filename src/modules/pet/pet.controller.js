@@ -8,11 +8,46 @@ const {
 	updateById,
 	deleteById,
 	updateStatus,
+	findAllOwnerPets,
 } = require('./pet.gateway');
+
+const { findById: findUser } = require('../../modules/users/users.gateway');
 
 const getAll = async (req, res = Response) => {
 	try {
 		const results = await findAll();
+		res.status(200).json(results);
+	} catch (err) {
+		console.log(err);
+		const message = validateError(err);
+		res.status(400).json({ message });
+	}
+};
+
+const getAllOwnerPets = async (req, res = Response) => {
+	try {
+		const { token } = req;
+		const { id } = req.params;
+
+		if (Number.isNaN(id)) throw Error('Wrong type');
+
+		const idNumber = parseInt(id);
+
+		if (token.id !== idNumber) {
+			return res.status(400).json({
+				message: 'You are not authorized to perform this action',
+			});
+		}
+
+		const userExists = await findUser(id);
+
+		if (!userExists[0]?.user_id) {
+			return res.status(400).json({
+				message: 'User not found',
+			});
+		}
+
+		const results = await findAllOwnerPets(id);
 		res.status(200).json(results);
 	} catch (err) {
 		console.log(err);
@@ -150,6 +185,7 @@ const remove = async (req, res = Response) => {
 const petRouter = Router();
 petRouter.get('/', [auth], getAll);
 petRouter.get('/:id', [auth], getById);
+petRouter.get('/owner/:id', [auth], getAllOwnerPets);
 petRouter.post('/', [auth], insert);
 petRouter.put('/', [auth], update);
 petRouter.delete('/', [auth], changeStatus);

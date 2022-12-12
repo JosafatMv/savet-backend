@@ -9,19 +9,20 @@ const login = async (user) => {
                  WHERE email = ?
                    AND status = 1;`;
 	const existsUser = await query(sql, [user.email]);
-	console.log(existsUser);
 	if (existsUser.length === 0) throw Error('User not found');
 	if (await validatePassword(user.password, existsUser[0].password)) {
 		const token = await generateToken({
 			id: existsUser[0].user_id,
 			email: user.email,
 			role: existsUser[0].role,
+			isConfirmed: existsUser[0].email_confirmation,
 			isLogged: true,
 		});
 		const userInfo = {
 			token,
 			email: user.email,
 			role: existsUser[0].role,
+			isConfirmed: existsUser[0].email_confirmation,
 		};
 
 		return userInfo;
@@ -36,17 +37,23 @@ const updateEmailStatus = async (email) => {
 	return await query(sql, [email]);
 };
 
-const revalidateToken = async (id, email, role) => {
+const revalidateToken = async (id, email, role, isConfirmed) => {
 	// Generar el JWT
-	const token = await generateToken({ id, email, role, isLogged: true });
+	const token = await generateToken({
+		id,
+		email,
+		role,
+		isLogged: true,
+		isConfirmed,
+	});
 
 	const user = {
 		id,
 		email,
 		role,
 		token,
+		isConfirmed,
 	};
-	console.log(user);
 
 	return user;
 };
