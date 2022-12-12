@@ -1,5 +1,5 @@
 const { Response, Router } = require('express');
-// const {checkRoles, auth} = require('../../config/jwt');
+const { v4: uuidv4 } = require('uuid');
 const { validateError } = require('../../utils/functions');
 const {
 	findAll,
@@ -9,10 +9,11 @@ const {
 	updateById,
 	updatePassword,
 	updateStatus,
+	findByEmail,
 } = require('./users.gateway');
 const { validateJWT } = require('../../middlewares/validate-jwt');
-const { auth, checkRoles } = require('../../config/jwt');
-const { transporter } = require('../../utils/email-service');
+const { auth, checkRoles, generateToken } = require('../../config/jwt');
+const { transporter, template } = require('../../utils/email-service');
 
 const getAll = async (req, res = Response) => {
 	try {
@@ -42,6 +43,13 @@ const insert = async (req, res = Response) => {
 	try {
 		const { name, lastname, surname, birthdate, email, password, role } =
 			req.body;
+
+		const emailExist = await findByEmail(email);
+
+		if (emailExist.length > 0) throw Error('Email already exists');
+
+		const code = uuidv4();
+
 		const result = await save({
 			name,
 			lastname,
@@ -51,15 +59,22 @@ const insert = async (req, res = Response) => {
 			password,
 			role,
 			status: 1,
+			emailConfirmation: 0,
+			code: code,
 		});
 
+		const token = await generateToken({ code, email });
+
 		const info = await transporter.sendMail({
-			from: `Petmania <${ process.env.EMAIL_USER }>`,
+			from: `Petmania <${process.env.EMAIL_USER}>`,
 			to: email,
 			subject: 'Registro exitoso',
-			text: 'Bienvenido a Petmania'
-		  });
-		  console.log(info);
+			html: template(
+				`${name} ${lastname} ${surname}`,
+				'Verifica tu correo electrónico para tener acceso a Petmania',
+				token
+			),
+		});
 
 		// const userRegistered = {
 		// 	result,

@@ -30,6 +30,12 @@ const login = async (user) => {
 	}
 };
 
+const updateEmailStatus = async (email) => {
+	if (!email) throw Error('Missing fields');
+	const sql = 'UPDATE users SET email_confirmation = 1 WHERE email = ?;';
+	return await query(sql, [email]);
+};
+
 const revalidateToken = async (id, email, role) => {
 	// Generar el JWT
 	const token = await generateToken({ id, email, role, isLogged: true });
@@ -48,4 +54,5 @@ const revalidateToken = async (id, email, role) => {
 module.exports = {
 	login,
 	revalidateToken,
+	updateEmailStatus,
 };

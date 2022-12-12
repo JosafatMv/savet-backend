@@ -16,6 +16,14 @@ const validateError = (error) => {
 			return 'User disabled';
 		case 'User not found':
 			return 'User not found';
+		case 'Email already exists':
+			return 'User already exists';
+		case 'Token is not valid':
+			return 'Validate token';
+		case 'Email does not exist':
+			return 'User does not exist';
+		case 'Missing services':
+			return 'Service are required';
 		default:
 			return 'Review request';
 	}

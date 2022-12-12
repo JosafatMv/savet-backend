@@ -10,6 +10,7 @@ const {
 	medicineRouter,
 	productRouter,
 	paymentRouter,
+	consultationRouter,
 } = require('../modules/routes');
 
 require('dotenv').config();
@@ -41,6 +42,7 @@ app.use('/api/service', serviceRouter);
 app.use('/api/medicine', medicineRouter);
 app.use('/api/product', productRouter);
 app.use('/api/payment', paymentRouter);
+app.use('/api/consultation', consultationRouter);
 
 module.exports = {
 	app,

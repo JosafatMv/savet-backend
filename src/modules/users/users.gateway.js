@@ -3,14 +3,21 @@ const { query } = require('../../utils/mysql');
 
 const findAll = async () => {
 	const sql =
-		'SELECT user_id, name, surname, lastname, birthdate, email, role, status  FROM users';
+		'SELECT user_id, name, surname, lastname, birthdate, email, role, status, email_confirmation, code FROM users';
 	return await query(sql, []);
+};
+
+const findByEmail = async (email) => {
+	if (!email) throw Error('Missing fields');
+	const sql =
+		'SELECT user_id, name, surname, lastname, birthdate, email, role, status, email_confirmation, code  FROM users WHERE email = ?';
+	return await query(sql, [email]);
 };
 
 const findById = async (id) => {
 	if (!id) throw Error('Missing fields');
 	const sql =
-		'SELECT user_id, name, surname, lastname, birthdate, email, role, status  FROM users WHERE user_id = ?';
+		'SELECT user_id, name, surname, lastname, birthdate, email, role, status, email_confirmation, code  FROM users WHERE user_id = ?';
 	return await query(sql, [id]);
 };
 
@@ -22,12 +29,14 @@ const save = async (user) => {
 		!user.email ||
 		!user.password ||
 		!user.role ||
-		!user.status
+		!user.status ||
+		user.emailConfirmation === undefined ||
+		!user.code
 	)
 		throw Error('Missing fields');
 
 	const sql =
-		'INSERT INTO users (name, surname, lastname, birthdate, email, password, role, status) VALUES (?,?,?,?,?,?,?,?);';
+		'INSERT INTO users (name, surname, lastname, birthdate, email, password, role, status, email_confirmation, code) VALUES (?,?,?,?,?,?,?,?,?,?);';
 
 	const password = await hashPassword(user.password);
 	const { insertId } = await query(sql, [
@@ -39,6 +48,8 @@ const save = async (user) => {
 		password,
 		user.role,
 		user.status,
+		user.emailConfirmation,
+		user.code,
 	]);
 
 	delete user.password;
@@ -79,6 +90,7 @@ const deleteById = async (id) => {
 module.exports = {
 	findAll,
 	findById,
+	findByEmail,
 	save,
 	deleteById,
 	updateStatus,

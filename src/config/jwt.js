@@ -5,6 +5,10 @@ const generateToken = (payload) => {
 	return jwt.sign(payload, process.env.SECRET_KEY);
 };
 
+const getData = (token) => {
+	return jwt.verify(token, process.env.SECRET_KEY);
+};
+
 const auth = async (req, res, next) => {
 	try {
 		const token = req.headers.authorization?.replace('Bearer ', '');
@@ -35,4 +39,5 @@ module.exports = {
 	generateToken,
 	auth,
 	checkRoles,
+	getData,
 };

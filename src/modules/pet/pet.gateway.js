@@ -9,7 +9,7 @@ const findAll = async () => {
 const findById = async (id) => {
 	if (!id) throw Error('Missing fields');
 	const sql =
-		"SELECT pt.*, concat(u.name, ' ', u.surname, ' ', u.lastname ) as 'owner' FROM pets pt INNER JOIN users u ON pt.user_id = u.user_id WHERE pt.pet_id = ?";
+		"SELECT pt.*, concat(u.name, ' ', u.surname, ' ', COALESCE(u.lastname,'') ) as 'owner' FROM pets pt INNER JOIN users u ON pt.user_id = u.user_id WHERE pt.pet_id = ?";
 	return await query(sql, [id]);
 };
 
